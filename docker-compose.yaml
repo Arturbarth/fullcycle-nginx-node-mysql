@@ -5,18 +5,18 @@ services:
     build:
       context: node
     container_name: app
-    # entrypoint: wait-for db:3306 -t 250 -- ./start.sh
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
     restart: always
+    command: npm start
     networks: 
       - node-network
     volumes:
       - ./node:/usr/src/app
       - /usr/src/app/node_modules
-    tty: true
-    # ports:
-    #   - "3000:3000"
+    tty: true    
     depends_on:
       - db
+      
   db:   
     image: mysql
     command: --innodb-use-native-aio=0
